@@ -6,12 +6,12 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
 
   <title>妖妖開花公告</title>
-  <meta name="description" content="妖妖開花公告｜獻花獻果平台。">
+  <meta name="description" content="妖妖開花公告｜查看最新開花預報、可收果花田與座標資訊。">
 
   <meta property="og:type" content="website">
   <meta property="og:title" content="妖妖開花公告">
-  <meta property="og:description" content="獻花獻果平台。">
-  <meta property="og:url" content="https://mdfk760-dot.github.io/PikminBloom/">
+  <meta property="og:description" content="查看最新開花預報、可收果花田與座標資訊。">
+  <meta property="og:url" content="https://mdfk760-dot.github.io/PikminBooom/">
 
   <style>
 	  
@@ -807,7 +807,7 @@
 
   <header>
     <h1>🌸 妖妖開花公告</h1>
-    <p>管理員分享開花成果，用戶一鍵複製座標。</p>
+    <p>Admin 分享開花成果，User 一鍵複製座標。</p>
   </header>
 
   <main class="wrap">
@@ -965,6 +965,13 @@
     const PROTECTED_REPORT_CACHE_KEY = "pikminReportsProtectedCacheV1";
     const FRONTEND_CACHE_MAX_AGE = 15 * 60 * 1000;
     let hasDisplayedReportSnapshot = false;
+
+    // 公告即時性：前景每 12 秒只檢查極小的資料版本值。
+    // 版本有變才重新抓完整公告，避免高頻讀取 Spreadsheet。
+    const DATA_VERSION_CHECK_INTERVAL = 12 * 1000;
+    let currentDataVersion = null;
+    let dataVersionTimer = null;
+    let isCheckingDataVersion = false;
 
     function hashText(text) {
       let hash = 2166136261;
@@ -1207,10 +1214,11 @@
     }
 
     const REPORT_FETCH_TIMEOUT = 15000;
+    const ACCESS_VERIFY_TIMEOUTS = [12000, 25000];
 
-    async function fetchWithTimeout(url, options = {}) {
+    async function fetchWithTimeout(url, options = {}, timeoutMs = REPORT_FETCH_TIMEOUT) {
       const controller = new AbortController();
-      const timeoutId = setTimeout(() => controller.abort(), REPORT_FETCH_TIMEOUT);
+      const timeoutId = setTimeout(() => controller.abort(), timeoutMs);
 
       try {
         return await fetch(url, {
@@ -1223,11 +1231,20 @@
       }
     }
 
+    function wait(ms) {
+      return new Promise(resolve => setTimeout(resolve, ms));
+    }
+
     async function loadReports() {
+      // 固定本次請求開始時的權限，避免登出後較慢的舊私田請求才回來，
+      // 又把私田資料寫回畫面或 public localStorage。
+      const requestRole = accessRole;
+      const requestPassword = accessPassword;
+
       try {
         let res;
 
-        if (accessRole === "private" || accessRole === "admin") {
+        if (requestRole === "private" || requestRole === "admin") {
           res = await fetchWithTimeout(API_URL, {
             method: "POST",
             headers: {
@@ -1235,7 +1252,7 @@
             },
             body: JSON.stringify({
               action: "list",
-              accessPassword
+              accessPassword: requestPassword
             })
           });
         } else {
@@ -1250,7 +1267,7 @@
 
         if (!data.success) {
           // 密碼被更改或失效時，自動退出權限模式。
-          if ((accessRole === "private" || accessRole === "admin") && data.code === "INVALID_ACCESS") {
+          if ((requestRole === "private" || requestRole === "admin") && data.code === "INVALID_ACCESS") {
             clearAccessSession();
             setAccessMode("public");
             restoreReportsSnapshot("public");
@@ -1260,14 +1277,19 @@
           throw new Error(data.message || "讀取資料失敗");
         }
 
+        // 使用者在請求途中已登出 / 切換權限時，丟棄舊權限回應。
+        if (requestRole !== accessRole) return false;
+
         reports = Array.isArray(data.reports) ? data.reports : [];
-        saveReportsSnapshot(accessRole, reports);
+        if (data.dataVersion != null) currentDataVersion = String(data.dataVersion);
+        saveReportsSnapshot(requestRole, reports);
         hasDisplayedReportSnapshot = true;
         return true;
       } catch (error) {
         console.error(error);
         const timedOut = error && error.name === "AbortError";
-        const hasFallback = hasDisplayedReportSnapshot || restoreReportsSnapshot(accessRole);
+        const hasFallback = requestRole === accessRole &&
+          (hasDisplayedReportSnapshot || restoreReportsSnapshot(requestRole));
 
         if (hasFallback) {
           showToast(timedOut
@@ -1281,30 +1303,57 @@
       }
     }
 
-    async function verifyAccessPassword(password) {
-      try {
-        const res = await fetchWithTimeout(API_URL, {
-          method: "POST",
-          body: JSON.stringify({
-            action: "verify",
-            accessPassword: password
-          })
-        });
+    async function verifyAccessPasswordOnce(password, timeoutMs) {
+      const res = await fetchWithTimeout(API_URL, {
+        method: "POST",
+        headers: {
+          "Content-Type": "text/plain;charset=utf-8"
+        },
+        body: JSON.stringify({
+          action: "verify",
+          accessPassword: password
+        })
+      }, timeoutMs);
 
-        const data = await res.json();
-        return {
-          success: !!data.success,
-          role: data.role || "public",
-          message: data.message || ""
-        };
-      } catch (error) {
-        console.error(error);
-        return {
-          success: false,
-          role: "public",
-          message: "無法驗證密碼，請確認 Apps Script 已重新部署。"
-        };
+      if (!res.ok) {
+        throw new Error(`HTTP ${res.status}`);
       }
+
+      const data = await res.json();
+      return {
+        success: !!data.success,
+        role: data.role || "public",
+        reports: Array.isArray(data.reports) ? data.reports : null,
+        dataVersion: data.dataVersion != null ? String(data.dataVersion) : null,
+        message: data.message || ""
+      };
+    }
+
+    async function verifyAccessPassword(password) {
+      let lastError = null;
+
+      for (let attempt = 0; attempt < ACCESS_VERIFY_TIMEOUTS.length; attempt++) {
+        try {
+          // 第一次逾時或網路暫時失敗時自動再試一次，使用者不用重新輸入密碼。
+          return await verifyAccessPasswordOnce(password, ACCESS_VERIFY_TIMEOUTS[attempt]);
+        } catch (error) {
+          lastError = error;
+          console.warn(`登入驗證第 ${attempt + 1} 次失敗`, error);
+
+          if (attempt < ACCESS_VERIFY_TIMEOUTS.length - 1) {
+            await wait(600);
+          }
+        }
+      }
+
+      const timedOut = lastError && lastError.name === "AbortError";
+      return {
+        success: false,
+        role: "public",
+        message: timedOut
+          ? "驗證逾時，Google Apps Script 暫時回應較慢，請稍後再試。"
+          : "暫時無法連線驗證，請稍後再試。"
+      };
     }
 
     async function saveReportToSheet(report) {
@@ -1492,7 +1541,7 @@
       "✗ 收果後請刪檔避免開錯檔誤踩",
       "✓ 開花後僅第𝟏小時會有果實",
       "✓ 花瓣不夠可只派𝟏皮種花",
-      "https://mdfk760-dot.github.io/PikminBloom/"
+      "https://mdfk760-dot.github.io/PikminBooom/"
     ].join("\n");
 
     function removeCopyNoticeFooter(text) {
@@ -2075,7 +2124,18 @@ ${trkptContent}
         return;
       }
 
-      const result = await verifyAccessPassword(inputPassword);
+      const loginBtn = $("confirmLoginBtn");
+      const originalLoginText = loginBtn.textContent;
+      loginBtn.disabled = true;
+      loginBtn.textContent = "驗證中…";
+
+      let result;
+      try {
+        result = await verifyAccessPassword(inputPassword);
+      } finally {
+        loginBtn.disabled = false;
+        loginBtn.textContent = originalLoginText;
+      }
 
       if (!result.success || !["private", "admin"].includes(result.role)) {
         alert(result.message || "密碼錯誤。");
@@ -2088,21 +2148,47 @@ ${trkptContent}
       $("loginDialog").close();
       setAccessMode(result.role);
 
-      hasDisplayedReportSnapshot = false;
-      const restoredProtected = restoreReportsSnapshot(result.role);
-      await refreshReports({ force: true, showLoading: !restoredProtected });
+      // 驗證成功的同一個 API 回應已附帶該權限可見的公告，
+      // 不再登入成功後立刻發第二次 list POST。
+      if (Array.isArray(result.reports)) {
+        reports = result.reports;
+        if (result.dataVersion != null) currentDataVersion = String(result.dataVersion);
+        hasDisplayedReportSnapshot = true;
+        saveReportsSnapshot(result.role, reports);
+        renderReports();
+      } else {
+        // 相容舊版 Apps Script：若尚未回傳 reports，才走原本的第二次讀取。
+        hasDisplayedReportSnapshot = false;
+        const restoredProtected = restoreReportsSnapshot(result.role);
+        await refreshReports({ force: true, showLoading: !restoredProtected });
+      }
+
       showToast(result.role === "admin" ? "已進入 Admin 管理模式" : "已進入私田模式");
     });
 
-    $("logoutBtn").addEventListener("click", async () => {
+    $("logoutBtn").addEventListener("click", () => {
       const wasAdmin = isAdmin;
       clearForm();
+
+      // 登出瞬間先在記憶體中移除所有私田，絕不等待 API 回應。
+      // 這樣即使 Google Apps Script 很慢，私田也不會繼續留在畫面上。
+      const publicOnlyReports = reports.filter(report =>
+        !String(report && report.place || "").includes("私")
+      );
+
+      clearProtectedReportsSnapshot();
       clearAccessSession();
+      accessRole = "public";
+      reports = publicOnlyReports;
+      hasDisplayedReportSnapshot = true;
+      saveReportsSnapshot("public", reports);
       setAccessMode("public");
-      hasDisplayedReportSnapshot = false;
-      const restoredPublic = restoreReportsSnapshot("public");
-      await refreshReports({ force: true, showLoading: !restoredPublic });
+      renderReports();
+
       showToast(wasAdmin ? "已離開 Admin 管理模式" : "已離開私田模式");
+
+      // 背景再向後端同步最新公開田，不阻塞登出。
+      refreshReports({ force: true, showLoading: false });
     });
 
 
@@ -2113,6 +2199,53 @@ ${trkptContent}
       url.searchParams.set("_latest", Date.now());
       window.location.replace(url.toString());
     });
+
+    async function checkDataVersion() {
+      if (document.visibilityState !== "visible" || isCheckingDataVersion || isLoadingReports) return;
+
+      isCheckingDataVersion = true;
+      try {
+        const res = await fetchWithTimeout(
+          `${API_URL}?action=version&ts=${Date.now()}`,
+          {},
+          8000
+        );
+        if (!res.ok) return;
+
+        const data = await res.json();
+        if (!data.success || data.dataVersion == null) return;
+
+        const serverVersion = String(data.dataVersion);
+        if (currentDataVersion === null) {
+          currentDataVersion = serverVersion;
+          return;
+        }
+
+        if (serverVersion !== currentDataVersion) {
+          // 不先覆蓋 currentDataVersion；完整讀取成功時 loadReports() 會同步版本。
+          // 若這次更新失敗，12 秒後會再嘗試，不會漏掉更新。
+          await refreshReports({ force: true, showLoading: false });
+        }
+      } catch (error) {
+        // 輕量版本檢查失敗不影響目前資料，下一輪再試。
+        console.debug("公告資料版本檢查失敗", error);
+      } finally {
+        isCheckingDataVersion = false;
+      }
+    }
+
+    function stopDataVersionTimer() {
+      if (dataVersionTimer !== null) {
+        clearInterval(dataVersionTimer);
+        dataVersionTimer = null;
+      }
+    }
+
+    function startDataVersionTimer() {
+      stopDataVersionTimer();
+      if (document.visibilityState !== "visible") return;
+      dataVersionTimer = setInterval(checkDataVersion, DATA_VERSION_CHECK_INTERVAL);
+    }
 
     const REPORT_REFRESH_INTERVAL = 60 * 1000;
     const REPORT_REFRESH_STALE_AFTER = 30 * 1000;
@@ -2188,9 +2321,12 @@ ${trkptContent}
           refreshReports();
         }
         checkForSiteUpdate();
+        checkDataVersion();
+        startDataVersionTimer();
         startReportsRefreshTimer();
         startSiteUpdateTimer();
       } else {
+        stopDataVersionTimer();
         stopReportsRefreshTimer();
         stopSiteUpdateTimer();
       }
@@ -2317,6 +2453,7 @@ ${trkptContent}
       hasDisplayedReportSnapshot = false;
       const restoredSnapshot = restoreReportsSnapshot(accessRole);
       await refreshReports({ force: true, showLoading: !restoredSnapshot });
+      startDataVersionTimer();
       startReportsRefreshTimer();
       startSiteUpdateTimer();
     }
