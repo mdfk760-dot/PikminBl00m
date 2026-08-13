@@ -190,7 +190,7 @@
     }
 
     .admin-panel-header:hover .admin-panel-title,
-    .-panel-header:hover .admin-collapse-btn {
+    .admin-panel-header:hover .admin-collapse-btn {
       filter: brightness(0.95);
     }
 
@@ -983,30 +983,17 @@
     }
 
     async function getPublishedPageFingerprint() {
+      // 只比較實際 HTML 內容，不使用 ETag / Last-Modified 等可能受 CDN 影響的 Header。
       const url = new URL(window.location.origin + window.location.pathname);
       url.searchParams.set("_updateCheck", Date.now());
 
-      try {
-        const response = await fetch(url.toString(), {
-          method: "HEAD",
-          cache: "no-store"
-        });
+      const response = await fetch(url.toString(), {
+        method: "GET",
+        cache: "no-store"
+      });
 
-        if (response.ok) {
-          const etag = response.headers.get("etag") || "";
-          const lastModified = response.headers.get("last-modified") || "";
-          const contentLength = response.headers.get("content-length") || "";
-          const headerFingerprint = [etag, lastModified, contentLength].filter(Boolean).join("|");
-          if (headerFingerprint) return `header:${headerFingerprint}`;
-        }
-      } catch (error) {
-        console.debug("HEAD 版本檢查失敗，改用內容指紋。", error);
-      }
-
-      // 若主機沒有提供 ETag / Last-Modified，才退回抓 HTML 內容比對。
-      const response = await fetch(url.toString(), { cache: "no-store" });
       if (!response.ok) throw new Error(`版本檢查 HTTP ${response.status}`);
-      return `html:${hashText(await response.text())}`;
+      return hashText(await response.text());
     }
 
     function showSiteUpdateBanner() {
@@ -1028,7 +1015,15 @@
           return;
         }
 
-        if (fingerprint !== publishedPageFingerprint) {
+        if (fingerprint === publishedPageFingerprint) return;
+
+        // 第一次發現內容不同先不提示；3 秒後再次確認。
+        // 只有兩次都取得相同的新內容 hash，才認定 GitHub Pages 已正式更新。
+        await new Promise(resolve => setTimeout(resolve, 3000));
+        if (document.visibilityState !== "visible" || siteUpdateDetected) return;
+
+        const confirmFingerprint = await getPublishedPageFingerprint();
+        if (confirmFingerprint === fingerprint && confirmFingerprint !== publishedPageFingerprint) {
           showSiteUpdateBanner();
         }
       } catch (error) {
