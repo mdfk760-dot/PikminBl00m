@@ -11,7 +11,7 @@
   <meta property="og:type" content="website">
   <meta property="og:title" content="妖妖開花公告">
   <meta property="og:description" content="查看最新開花預報、可收果花田與座標資訊。">
-  <meta property="og:url" content="https://mdfk760-dot.github.io/PikminBoom/">
+  <meta property="og:url" content="https://mdfk760-dot.github.io/PikminBooom/">
 
   <style>
 	  
@@ -164,15 +164,17 @@
       color: var(--text);
     }
 
-    .admin-panel {
-      display: none;
-      padding: 0;
-      overflow: hidden;
-    }
+.admin-panel {
+  display: none;
+  padding: 0;
+  overflow: hidden;
+}
 
-    .admin-panel.active { display: block; }
+.admin-panel.active {
+  display: block;
+}
 
-    .admin-panel-header {
+    .-panel-header {
       display: flex;
       align-items: center;
       justify-content: space-between;
@@ -184,8 +186,8 @@
       user-select: none;
     }
 
-    .admin-panel-header:hover .admin-panel-title,
-    .admin-panel-header:hover .admin-collapse-btn {
+    .-panel-header:hover .-panel-title,
+    .-panel-header:hover .admin-collapse-btn {
       filter: brightness(0.95);
     }
 
@@ -833,7 +835,7 @@
   <dialog id="loginDialog">
     <button id="closeLoginBtn" type="button" aria-label="關閉登入視窗" title="關閉">&times;</button>
     <h3 style="margin:0 44px 0 0;">Admin 管理登入</h3>
-    <p style="color:var(--muted);line-height:1.6;">輸入管理密碼後，可新增、編輯、刪除公告。</p>
+    <p style="color:var(--muted);line-height:1.6;">只有管理員才可以登入，請按右上角叉叉返回，別再問我密碼。</p>
     <div class="small-row">
       <input id="passwordInput" type="password" placeholder="管理密碼" />
       <button id="confirmLoginBtn">登入</button>
@@ -862,7 +864,7 @@
       "向日葵", "彼岸花", "大波斯菊", "兔耳花", "水仙花", "銀蓮花", "粉蝶花", "海芋", "雞蛋花", "扶桑花",
       "石竹", "龍膽", "菊花", "聖誕玫瑰", "嘉德麗雅蘭", "風信子", "豌豆花", "鈴蘭", "牡丹", "睡蓮",
       "牽牛花", "九重葛", "大理花", "鐵線蓮", "雪花蓮", "小蒼蘭", "油菜花", "週年玫瑰", "鳶尾花", "天堂鳥",
-      "雞冠花", "萬壽菊", "鼠尾草", "櫻草花", "蝴蝶蘭", "金魚草", "矮牽牛", "鸚鵡鬱金香", "勿忘草", "風鈴草", "曇花"
+      "雞冠花", "萬壽菊", "鼠尾草", "櫻草花", "蝴蝶蘭", "金魚草", "矮牽牛", "鸚鵡鬱金香", "勿忘草", "風鈴草", "曇花","美人蕉"
     ];
 
     let reports = [];
@@ -1175,7 +1177,7 @@
       "✗ 收果後請刪檔避免開錯檔誤踩",
       "✓ 開花後僅第𝟏小時會有果實",
       "✓ 花瓣不夠可只派𝟏皮種花",
-      "https://mdfk760-dot.github.io/PikminBoom/"
+      "https://mdfk760-dot.github.io/PikminBooom/"
     ].join("\n");
 
     function removeCopyNoticeFooter(text) {
