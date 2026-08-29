@@ -659,12 +659,12 @@
     .event-card {
       display: grid;
       grid-template-columns:
-        minmax(135px, 1.05fr)
-        minmax(88px, 0.62fr)
-        minmax(180px, 0.95fr)
-        minmax(78px, 0.52fr)
-        minmax(120px, 0.9fr)
-        minmax(360px, 2.05fr);
+        minmax(125px, 0.95fr)
+        minmax(112px, 0.72fr)
+        minmax(172px, 0.9fr)
+        minmax(74px, 0.48fr)
+        minmax(110px, 0.82fr)
+        minmax(360px, 2.1fr);
       align-items: stretch;
     }
 
@@ -702,6 +702,7 @@
       align-items: center;
     }
 
+    .event-interval-cell,
     .event-period-cell {
       white-space: nowrap;
     }
@@ -1337,10 +1338,10 @@
     let siteUpdateTimer = null;
     let siteUpdateDetected = false;
 
-    // 前端最後成功資料備援。
-    // 公開田可安全持久保存；私田 / Admin 含私密座標，只保存於目前分頁 session。
-    const PUBLIC_REPORT_CACHE_KEY = "pikminReportsPublicCacheV1";
-    const PROTECTED_REPORT_CACHE_KEY = "pikminReportsProtectedCacheV1";
+    // 前端最後成功資料備援：開花公告 + 活動公告共用同一份快取。
+    // 公開資料可安全持久保存；私田 / Admin 含私密座標，只保存於目前分頁 session。
+    const PUBLIC_DATA_CACHE_KEY = "pikminPublicDataCacheV2";
+    const PROTECTED_DATA_CACHE_KEY = "pikminProtectedDataCacheV2";
     const FRONTEND_CACHE_MAX_AGE = 15 * 60 * 1000;
     let hasDisplayedReportSnapshot = false;
 
@@ -1427,37 +1428,38 @@
     }
 
 
-    function getFrontendReportStorage(role = accessRole) {
+    function getFrontendDataStorage(role = accessRole) {
       return role === "public" ? localStorage : sessionStorage;
     }
 
-    function getFrontendReportCacheKey(role = accessRole) {
-      return role === "public" ? PUBLIC_REPORT_CACHE_KEY : PROTECTED_REPORT_CACHE_KEY;
+    function getFrontendDataCacheKey(role = accessRole) {
+      return role === "public" ? PUBLIC_DATA_CACHE_KEY : PROTECTED_DATA_CACHE_KEY;
     }
 
-    function saveReportsSnapshot(role, reportList) {
+    function saveDataSnapshot(role, reportList, eventList) {
       try {
-        const storage = getFrontendReportStorage(role);
-        const key = getFrontendReportCacheKey(role);
+        const storage = getFrontendDataStorage(role);
+        const key = getFrontendDataCacheKey(role);
         storage.setItem(key, JSON.stringify({
           savedAt: Date.now(),
           role: role === "public" ? "public" : "protected",
-          reports: Array.isArray(reportList) ? reportList : []
+          reports: Array.isArray(reportList) ? reportList : [],
+          events: Array.isArray(eventList) ? eventList : []
         }));
       } catch (error) {
-        console.debug("保存前端公告備援失敗", error);
+        console.debug("保存前端共同資料備援失敗", error);
       }
     }
 
-    function restoreReportsSnapshot(role = accessRole) {
+    function restoreDataSnapshot(role = accessRole) {
       try {
-        const storage = getFrontendReportStorage(role);
-        const key = getFrontendReportCacheKey(role);
+        const storage = getFrontendDataStorage(role);
+        const key = getFrontendDataCacheKey(role);
         const raw = storage.getItem(key);
         if (!raw) return false;
 
         const snapshot = JSON.parse(raw);
-        if (!snapshot || !Array.isArray(snapshot.reports) || !Number.isFinite(Number(snapshot.savedAt))) {
+        if (!snapshot || !Array.isArray(snapshot.reports) || !Array.isArray(snapshot.events) || !Number.isFinite(Number(snapshot.savedAt))) {
           storage.removeItem(key);
           return false;
         }
@@ -1468,21 +1470,36 @@
         }
 
         reports = snapshot.reports;
+        events = snapshot.events;
         hasDisplayedReportSnapshot = true;
         renderReports();
+        renderEvents();
         return true;
       } catch (error) {
-        console.debug("讀取前端公告備援失敗", error);
+        console.debug("讀取前端共同資料備援失敗", error);
         return false;
       }
     }
 
-    function clearProtectedReportsSnapshot() {
+    function clearProtectedDataSnapshot() {
       try {
-        sessionStorage.removeItem(PROTECTED_REPORT_CACHE_KEY);
+        sessionStorage.removeItem(PROTECTED_DATA_CACHE_KEY);
       } catch (error) {
-        console.debug("清除私田備援失敗", error);
+        console.debug("清除受保護資料備援失敗", error);
       }
+    }
+
+    // 舊函式名稱保留相容性。
+    function saveReportsSnapshot(role, reportList) {
+      saveDataSnapshot(role, reportList, events);
+    }
+
+    function restoreReportsSnapshot(role = accessRole) {
+      return restoreDataSnapshot(role);
+    }
+
+    function clearProtectedReportsSnapshot() {
+      clearProtectedDataSnapshot();
     }
 
     function showToast(message) {
@@ -1654,8 +1671,9 @@
         if (requestRole !== accessRole) return false;
 
         reports = Array.isArray(data.reports) ? data.reports : [];
+        events = Array.isArray(data.events) ? data.events : [];
         if (data.dataVersion != null) currentDataVersion = String(data.dataVersion);
-        saveReportsSnapshot(requestRole, reports);
+        saveDataSnapshot(requestRole, reports, events);
         hasDisplayedReportSnapshot = true;
         return true;
       } catch (error) {
@@ -1697,6 +1715,7 @@
         success: !!data.success,
         role: data.role || "public",
         reports: Array.isArray(data.reports) ? data.reports : null,
+        events: Array.isArray(data.events) ? data.events : null,
         dataVersion: data.dataVersion != null ? String(data.dataVersion) : null,
         message: data.message || ""
       };
@@ -2296,23 +2315,11 @@ ${trkptContent}
       return nonEmptyLines.length > 0 && parsed.length === nonEmptyLines.length;
     }
 
-    async function loadEvents({ showLoading = false } = {}) {
-      if (showLoading) $("eventsLoading").style.display = "block";
-      try {
-        const res = await fetchWithTimeout(`${API_URL}?action=listEvents&ts=${Date.now()}`);
-        if (!res.ok) throw new Error(`HTTP ${res.status}`);
-        const data = await res.json();
-        if (!data.success) throw new Error(data.message || "讀取活動失敗");
-        events = Array.isArray(data.events) ? data.events : [];
-        renderEvents();
-        return true;
-      } catch (error) {
-        console.error("活動座標讀取失敗", error);
-        showToast("活動座標暫時無法更新");
-        return false;
-      } finally {
-        $("eventsLoading").style.display = "none";
-      }
+    // 活動資料已與開花公告共用同一個 API / 快取。
+    // 保留函式名稱避免舊程式呼叫失效，但不再另外發送網路請求。
+    async function loadEvents() {
+      renderEvents();
+      return true;
     }
 
     function buildEventGpx(eventData) {
@@ -2552,7 +2559,7 @@ ${trkpts}
       if (!eventData) return;
       if (!confirm(`確定要刪除活動「${eventData.name || "未命名活動"}」嗎？`)) return;
       if (!await deleteEventFromSheet(id)) return;
-      await loadEvents();
+      await refreshReports({ force: true, showLoading: false });
       clearEventForm();
       showToast("已刪除活動");
     }
@@ -2826,7 +2833,7 @@ ${trkpts}
       const wasEditingEvent = !!editingEventId;
       const success = await saveEventToSheet(eventData);
       if (!success) return;
-      await loadEvents();
+      await refreshReports({ force: true, showLoading: false });
       clearEventForm();
       showToast(wasEditingEvent ? "已更新活動" : "已新增活動");
     });
@@ -2899,10 +2906,12 @@ ${trkpts}
       // 不再登入成功後立刻發第二次 list POST。
       if (Array.isArray(result.reports)) {
         reports = result.reports;
+        events = Array.isArray(result.events) ? result.events : events;
         if (result.dataVersion != null) currentDataVersion = String(result.dataVersion);
         hasDisplayedReportSnapshot = true;
-        saveReportsSnapshot(result.role, reports);
+        saveDataSnapshot(result.role, reports, events);
         renderReports();
+        renderEvents();
       } else {
         // 相容舊版 Apps Script：若尚未回傳 reports，才走原本的第二次讀取。
         hasDisplayedReportSnapshot = false;
@@ -2929,9 +2938,10 @@ ${trkpts}
       accessRole = "public";
       reports = publicOnlyReports;
       hasDisplayedReportSnapshot = true;
-      saveReportsSnapshot("public", reports);
+      saveDataSnapshot("public", reports, events);
       setAccessMode("public");
       renderReports();
+      renderEvents();
 
       showToast(wasAdmin ? "已離開 Admin 管理模式" : "已離開私田模式");
 
@@ -2976,7 +2986,6 @@ ${trkpts}
           // 不先覆蓋 currentDataVersion；完整讀取成功時 loadReports() 會同步版本。
           // 若這次更新失敗，12 秒後會再嘗試，不會漏掉更新。
           await refreshReports({ force: true, showLoading: false });
-          await loadEvents();
         }
       } catch (error) {
         // 輕量版本檢查失敗不影響目前資料，下一輪再試。
@@ -3034,6 +3043,7 @@ ${trkpts}
         if (success) {
           lastReportsRefreshAt = Date.now();
           renderReports();
+          renderEvents();
         }
       } finally {
         if (loadingAnimationTimer !== null) {
@@ -3204,9 +3214,8 @@ ${trkpts}
       }
 
       hasDisplayedReportSnapshot = false;
-      const restoredSnapshot = restoreReportsSnapshot(accessRole);
+      const restoredSnapshot = restoreDataSnapshot(accessRole);
       await refreshReports({ force: true, showLoading: !restoredSnapshot });
-      await loadEvents({ showLoading: true });
       startDataVersionTimer();
       startReportsRefreshTimer();
       startSiteUpdateTimer();
