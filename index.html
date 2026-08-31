@@ -93,27 +93,6 @@
       flex: 1;
     }
 
-    .event-summary {
-      display: none;
-      flex: 1;
-      align-items: center;
-      gap: 8px;
-      min-height: 42px;
-      padding: 0 4px;
-      color: var(--muted);
-      font-size: 14px;
-      font-weight: 800;
-      white-space: nowrap;
-    }
-
-    .event-summary strong {
-      color: var(--text);
-      font-weight: 900;
-    }
-
-    body.event-tab-on .search-area { display: none; }
-    body.event-tab-on .event-summary { display: flex; }
-
     input,
     select,
     textarea,
@@ -621,166 +600,6 @@
       padding: 9px 12px;
     }
 
-
-    /* ===== 活動座標 ===== */
-    .event-admin-divider {
-      grid-column: 1 / -1;
-      margin: 10px 0 0;
-      padding-top: 16px;
-      border-top: 1px dashed var(--border);
-      font-size: 15px;
-      font-weight: 900;
-      color: var(--green-dark);
-    }
-
-    .event-admin-actions {
-      margin-top: 14px;
-      padding-top: 14px;
-      border-top: 1px dashed var(--border);
-    }
-
-    #eventCoordsInput { min-height: 150px; }
-
-    .events-section { display: none; }
-    .events-section.active { display: block; }
-
-    .events-grid {
-      display: block;
-      width: 100%;
-      overflow: hidden;
-      border: 1px solid var(--border);
-      border-top: 0;
-      border-radius: 22px;
-      background: rgba(255, 255, 255, 0.94);
-      box-shadow: var(--shadow);
-    }
-
-    .event-table-header,
-    .event-card {
-      display: grid;
-      grid-template-columns:
-        minmax(125px, 0.95fr)
-        minmax(112px, 0.72fr)
-        minmax(172px, 0.9fr)
-        minmax(74px, 0.48fr)
-        minmax(110px, 0.82fr)
-        minmax(360px, 2.1fr);
-      align-items: stretch;
-    }
-
-    .event-table-header {
-      background: #eef8ee;
-      color: var(--green-dark);
-      font-weight: 900;
-      font-size: 13px;
-      border-bottom: 1px solid var(--border);
-    }
-
-    .event-card {
-      border-bottom: 1px solid var(--border);
-      background: rgba(255, 255, 255, 0.94);
-    }
-
-    .event-card:last-child { border-bottom: 0; }
-    .event-card.ended { opacity: 0.72; }
-
-    .event-cell {
-      min-width: 0;
-      padding: 12px 11px;
-      border-right: 1px solid var(--border);
-      display: flex;
-      align-items: center;
-      gap: 8px;
-      line-height: 1.45;
-      font-size: 14px;
-      word-break: break-word;
-    }
-
-    .event-cell:last-child { border-right: 0; }
-
-    .event-name-cell {
-      align-items: center;
-    }
-
-    .event-interval-cell,
-    .event-period-cell {
-      white-space: nowrap;
-    }
-
-    .event-operation-cell {
-      gap: 7px;
-      flex-wrap: nowrap;
-      white-space: nowrap;
-    }
-
-    .event-title-row {
-      display: flex;
-      align-items: center;
-      flex-wrap: nowrap;
-      gap: 7px;
-    }
-
-    .event-card-title {
-      margin: 0;
-      font-size: 15px;
-      font-weight: 900;
-      line-height: 1.35;
-    }
-
-    .event-status {
-      flex: 0 0 auto;
-      padding: 4px 8px;
-      border-radius: 999px;
-      font-size: 11px;
-      font-weight: 900;
-      background: #edf7ee;
-      color: var(--green-dark);
-      white-space: nowrap;
-    }
-
-    .event-status.upcoming { background: #fff5df; color: #9a6a18; }
-    .event-status.ended { background: #f4eeee; color: var(--muted); }
-    .event-status.permanent { background: #eef2ff; color: #5e6ea8; }
-
-    .event-actions {
-      display: flex;
-      flex-wrap: nowrap;
-      gap: 6px;
-      width: auto;
-    }
-
-    .event-actions button {
-      width: auto;
-      padding: 7px 9px;
-      font-size: 12px;
-      border-radius: 10px;
-    }
-
-    .event-admin-row {
-      display: none;
-      flex-wrap: nowrap;
-      gap: 6px;
-      width: auto;
-    }
-
-    .event-admin-row button {
-      width: auto;
-      padding: 7px 9px;
-      font-size: 12px;
-      border-radius: 10px;
-    }
-
-    body.admin-on .event-admin-row { display: flex; }
-
-    .event-mobile-label { display: none; }
-
-    .events-ended-title {
-      margin: 18px 4px 10px;
-      color: var(--muted);
-      font-size: 15px;
-      font-weight: 900;
-    }
-
     @media (max-width: 1024px) {
       header {
         padding: 18px 12px 10px;
@@ -804,14 +623,7 @@
       .field.half { grid-column: 1 / -1; }
       .topbar { align-items: stretch; }
       .search-area,
-      .event-summary,
       .topbar > button { width: 100%; }
-
-      .event-summary {
-        min-height: 36px;
-        padding: 2px 4px;
-        white-space: normal;
-      }
 
       /* 手機版隱藏「全部花種（可輸入搜尋）」欄位 */
       #flowerFilter {
@@ -956,79 +768,6 @@
         width: 100%;
       }
 
-
-      .events-grid {
-        border: 0;
-        border-radius: 0;
-        box-shadow: none;
-        background: transparent;
-        display: grid;
-        gap: 10px;
-        overflow: visible;
-      }
-
-      .event-table-header { display: none; }
-
-      .event-card {
-        display: grid;
-        grid-template-columns: 1fr 1fr;
-        border: 1px solid var(--border);
-        border-radius: 18px;
-        overflow: hidden;
-        box-shadow: var(--shadow);
-      }
-
-      .event-card:last-child { border-bottom: 1px solid var(--border); }
-
-      .event-cell {
-        border-right: 0;
-        border-bottom: 1px solid var(--border);
-        padding: 10px 12px;
-        min-height: 44px;
-        font-size: 13px;
-      }
-
-      .event-name-cell {
-        grid-column: 1 / -1;
-        border-bottom: 1px solid var(--border);
-        gap: 8px;
-      }
-
-      .event-card-title { font-size: 17px; }
-
-      .event-period-cell,
-      .event-note-cell,
-      .event-operation-cell {
-        grid-column: 1 / -1;
-      }
-
-      .event-count-cell { border-left: 1px solid var(--border); }
-      .event-operation-cell {
-        border-bottom: 0;
-        flex-wrap: wrap;
-        white-space: normal;
-      }
-      .event-note-cell { border-bottom: 1px solid var(--border); }
-
-      .event-mobile-label {
-        display: inline-block;
-        flex: 0 0 auto;
-        color: var(--muted);
-        font-weight: 900;
-      }
-
-      .event-actions,
-      .event-admin-row {
-        width: auto;
-        flex-wrap: wrap;
-      }
-
-      .event-actions button,
-      .event-admin-row button {
-        flex: 0 0 auto;
-        width: auto;
-      }
-
       .notice-float {
         left: auto;
         right: 10px;
@@ -1058,69 +797,6 @@
       }
 
     }
-
-
-    /* ===== 主功能分頁 Tabs ===== */
-    .main-tabs {
-      display: flex;
-      gap: 8px;
-      padding: 6px;
-      background: rgba(255,255,255,0.78);
-      border: 1px solid var(--border);
-      border-radius: 18px;
-      box-shadow: var(--shadow);
-    }
-
-    .main-tab-btn {
-      width: auto;
-      flex: 1 1 0;
-      padding: 11px 16px;
-      border-radius: 13px;
-      background: transparent;
-      color: var(--muted);
-      border: 1px solid transparent;
-      box-shadow: none;
-    }
-
-    .main-tab-btn:hover {
-      background: #fff8f2;
-      color: var(--text);
-      transform: none;
-    }
-
-    .main-tab-btn.active {
-      background: #fff0f5;
-      color: var(--primary-dark);
-      border-color: var(--border);
-      box-shadow: 0 5px 14px rgba(112,79,61,0.08);
-    }
-
-    .main-tab-view { display: none; }
-    .main-tab-view.active { display: block; }
-
-    .admin-tab-content { display: none; }
-    .admin-tab-content.active { display: block; }
-
-    body.event-tab-on .search-area { visibility: hidden; pointer-events: none; }
-    body.event-tab-on .notice-float { display: none; }
-
-    #eventsView .events-section { display: block; }
-
-    @media (max-width: 1024px) {
-      .main-tabs {
-        position: sticky;
-        top: 8px;
-        z-index: 30;
-        border-radius: 16px;
-      }
-      .main-tab-btn {
-        width: 50%;
-        padding: 10px 8px;
-        font-size: 14px;
-      }
-      body.event-tab-on .search-area { display: none; }
-    }
-
   </style>
 </head>
 <body>
@@ -1144,143 +820,90 @@
         <input id="flowerFilter" type="search" list="flowerFilterList" placeholder="全部花種（可輸入搜尋）" autocomplete="off" />
         <datalist id="flowerFilterList"></datalist>
       </div>
-      <div id="eventSummary" class="event-summary" aria-live="polite">
-        <strong>活動摘要</strong>
-        <span id="eventSummaryText">載入中...</span>
-      </div>
       <button id="adminLoginBtn" class="secondary">管理員登入</button>
       <button id="logoutBtn" class="ghost" style="display:none;">登出</button>
     </section>
 
-    <nav class="main-tabs" aria-label="網站功能分頁">
-      <button id="flowerTabBtn" class="main-tab-btn active" type="button">🌸 開花公告</button>
-      <button id="eventTabBtn" class="main-tab-btn" type="button">🎪 活動座標</button>
-    </nav>
-
     <section id="adminPanel" class="panel admin-panel">
       <div id="adminPanelHeader" class="admin-panel-header" role="button" tabindex="0" aria-expanded="true" aria-controls="adminPanelBody">
-        <h2 id="adminPanelTitle" class="admin-panel-title">Admin 管理區｜開花公告</h2>
+        <h2 class="admin-panel-title">Admin 管理區</h2>
         <button id="adminCollapseBtn" class="admin-collapse-btn" type="button" tabindex="-1" aria-hidden="true">▲</button>
       </div>
 
       <div id="adminPanelBody" class="admin-panel-body">
-        <div id="flowerAdminContent" class="admin-tab-content active">
-          <div class="admin-grid">
-            <div class="field half">
-              <label for="rawInput">貼上內容</label>
-              <textarea id="rawInput" placeholder="例如：
+      <div class="admin-grid">
+        <div class="field half">
+          <label for="rawInput">貼上內容</label>
+          <textarea id="rawInput" placeholder="例如：
 &quot;妖妖C左
 🌸紅色菊花25株
 ⏰5/26 12:05
 📝隨意收&quot;"></textarea>
-            </div>
-            <div class="field half">
-              <label for="coordsInput">貼上座標</label>
-              <textarea id="coordsInput" class="coords-box" placeholder="例如：
+        </div>
+
+        <div class="field half">
+          <label for="coordsInput">貼上座標</label>
+          <textarea id="coordsInput" class="coords-box" placeholder="例如：
 25.000000,121.000000
 25.000001,121.000001
 25.000002,121.000002"></textarea>
-            </div>
-            <div class="field">
-              <label for="placeInput">地點 / 花田名稱</label>
-              <input id="placeInput" type="text" placeholder="例如：妖妖C左" />
-            </div>
-            <div class="field">
-              <label for="timeInput">開花時間</label>
-              <input id="timeInput" type="text" placeholder="例如：5/26 12:05" />
-            </div>
-            <div class="field">
-              <label for="colorInput">花朵顏色</label>
-              <select id="colorInput"></select>
-            </div>
-            <div class="field">
-              <label for="flowerInput">花朵種類</label>
-              <input id="flowerInput" type="search" list="flowerInputList" placeholder="輸入或選擇花種" autocomplete="off" />
-              <datalist id="flowerInputList"></datalist>
-            </div>
-            <div class="field">
-              <label for="amountInput">株數（自動等於座標數量）</label>
-              <input id="amountInput" type="number" min="0" placeholder="依座標數量自動計算" readonly />
-            </div>
-            <div class="field">
-              <label for="noteInput">備註</label>
-              <input id="noteInput" type="text" placeholder="例如：隨意收" />
-            </div>
-          </div>
-          <div class="actions">
-            <button id="parseBtn" class="green">從公告文字自動解析</button>
-            <button id="saveBtn">新增 / 更新公告</button>
-            <button id="clearFormBtn" class="ghost">清空輸入</button>
-            <button id="deleteAllBtn" class="danger">刪除全部公告</button>
-          </div>
         </div>
 
-        <div id="eventAdminContent" class="admin-tab-content">
-          <div class="admin-grid">
-            <div class="field">
-              <label for="eventNameInput">活動名稱</label>
-              <input id="eventNameInput" type="text" placeholder="例如：京都活動盆栽" />
-            </div>
-            <div class="field">
-              <label for="eventIntervalInput">活動盆間隔</label>
-              <select id="eventIntervalInput">
-                <option value="1day">每1天一次</option>
-                <option value="7days">每7天一次</option>
-                <option value="30days">每30天一次</option>
-                <option value="monthly1st">每月1號刷新</option>
-                <option value="once">活動期間限一次</option>
-              </select>
-            </div>
-            <div class="field">
-              <label for="eventStartDateInput">活動開始日期</label>
-              <input id="eventStartDateInput" type="date" />
-            </div>
-            <div class="field">
-              <label for="eventEndDateInput">活動結束日期（常駐請留空）</label>
-              <input id="eventEndDateInput" type="date" />
-            </div>
-            <div class="field full">
-              <label for="eventCoordsInput">活動座標（每行：名稱;緯度,經度）</label>
-              <textarea id="eventCoordsInput" class="coords-box" placeholder="例如：
-台北車站;25.047760,121.517058
-西門町;25.042236,121.507987"></textarea>
-            </div>
-            <div class="field full">
-              <label for="eventNoteInput">活動備註</label>
-              <input id="eventNoteInput" type="text" placeholder="例如：每日 00:00 重置" />
-            </div>
-          </div>
-          <div class="actions event-admin-actions">
-            <button id="saveEventBtn" class="green">新增活動</button>
-            <button id="clearEventBtn" class="ghost">清空活動輸入</button>
-          </div>
+        <div class="field">
+          <label for="placeInput">地點 / 花田名稱</label>
+          <input id="placeInput" type="text" placeholder="例如：妖妖C左" />
         </div>
 
-        <div class="hint">
-          管理密碼已改由 Google Apps Script 驗證，HTML 不再保存管理密碼。<br />
-          目前資料會寫入 Google Spreadsheet，所有使用者會讀取同一份公告資料。
+        <div class="field">
+          <label for="timeInput">開花時間</label>
+          <input id="timeInput" type="text" placeholder="例如：5/26 12:05" />
         </div>
+
+        <div class="field">
+          <label for="colorInput">花朵顏色</label>
+          <select id="colorInput"></select>
+        </div>
+
+        <div class="field">
+          <label for="flowerInput">花朵種類</label>
+          <input id="flowerInput" type="search" list="flowerInputList" placeholder="輸入或選擇花種" autocomplete="off" />
+          <datalist id="flowerInputList"></datalist>
+        </div>
+
+        <div class="field">
+          <label for="amountInput">株數（自動等於座標數量）</label>
+          <input id="amountInput" type="number" min="0" placeholder="依座標數量自動計算" readonly />
+        </div>
+
+        <div class="field">
+          <label for="noteInput">備註</label>
+          <input id="noteInput" type="text" placeholder="例如：隨意收" />
+        </div>
+      </div>
+
+      <div class="actions">
+        <button id="parseBtn" class="green">從公告文字自動解析</button>
+        <button id="saveBtn">新增 / 更新公告</button>
+        <button id="clearFormBtn" class="ghost">清空輸入</button>
+        <button id="deleteAllBtn" class="danger">刪除全部公告</button>
+      </div>
+
+      <div class="hint">
+        管理密碼已改由 Google Apps Script 驗證，HTML 不再保存管理密碼。<br />
+        目前資料會寫入 Google Spreadsheet，所有使用者會讀取同一份公告資料。
+      </div>
       </div>
     </section>
 
-    <div id="flowerView" class="main-tab-view active">
-      <div id="loadingMessage" class="empty" style="display:block;">
-        🌱 皮克敏正在搬運花田資料，請稍後...
-      </div>
-      <section id="cards" class="cards"></section>
-      <div id="empty" class="empty">目前沒有符合條件的開花公告。</div>
-    </div>
+<div id="loadingMessage" class="empty" style="display:block;">
+  🌱 皮克敏正在搬運花田資料，請稍後...
+</div>
 
-    <div id="eventsView" class="main-tab-view">
-      <div id="eventsLoading" class="empty" style="display:none;">🎪 正在載入活動座標...</div>
-      <section id="eventsSection" class="events-section">
-        <div class="result-section-title">活動座標 <span id="eventsCount" class="sub"></span></div>
-        <div id="eventsGrid" class="events-grid"></div>
-        <div id="endedEventsTitle" class="events-ended-title" style="display:none;">已結束活動</div>
-        <div id="endedEventsGrid" class="events-grid"></div>
-      </section>
-      <div id="eventsEmpty" class="empty">目前沒有活動座標。</div>
-    </div>
+<section id="cards" class="cards"></section>
+
+<div id="empty" class="empty">
+  目前沒有符合條件的開花公告。
+</div>
   </main>
 
   <footer class="page-footer-note">本頁面僅透過妖妖本人分享於【疲勞部私人群組】、【皮克敏飛人交流群】、【pikmin bloom皮皮之家】，並無授權其他社群使用。</footer>
@@ -1321,9 +944,7 @@
     ];
 
     let reports = [];
-    let events = [];
     let editingId = null;
-    let editingEventId = null;
     let accessPassword = sessionStorage.getItem("pikminAccessPassword") || "";
     let accessRole = "public"; // public | private | admin
     let adminPassword = "";
@@ -1338,10 +959,10 @@
     let siteUpdateTimer = null;
     let siteUpdateDetected = false;
 
-    // 前端最後成功資料備援：開花公告 + 活動公告共用同一份快取。
-    // 公開資料可安全持久保存；私田 / Admin 含私密座標，只保存於目前分頁 session。
-    const PUBLIC_DATA_CACHE_KEY = "pikminPublicDataCacheV2";
-    const PROTECTED_DATA_CACHE_KEY = "pikminProtectedDataCacheV2";
+    // 前端最後成功資料備援。
+    // 公開田可安全持久保存；私田 / Admin 含私密座標，只保存於目前分頁 session。
+    const PUBLIC_REPORT_CACHE_KEY = "pikminReportsPublicCacheV1";
+    const PROTECTED_REPORT_CACHE_KEY = "pikminReportsProtectedCacheV1";
     const FRONTEND_CACHE_MAX_AGE = 15 * 60 * 1000;
     let hasDisplayedReportSnapshot = false;
 
@@ -1428,38 +1049,37 @@
     }
 
 
-    function getFrontendDataStorage(role = accessRole) {
+    function getFrontendReportStorage(role = accessRole) {
       return role === "public" ? localStorage : sessionStorage;
     }
 
-    function getFrontendDataCacheKey(role = accessRole) {
-      return role === "public" ? PUBLIC_DATA_CACHE_KEY : PROTECTED_DATA_CACHE_KEY;
+    function getFrontendReportCacheKey(role = accessRole) {
+      return role === "public" ? PUBLIC_REPORT_CACHE_KEY : PROTECTED_REPORT_CACHE_KEY;
     }
 
-    function saveDataSnapshot(role, reportList, eventList) {
+    function saveReportsSnapshot(role, reportList) {
       try {
-        const storage = getFrontendDataStorage(role);
-        const key = getFrontendDataCacheKey(role);
+        const storage = getFrontendReportStorage(role);
+        const key = getFrontendReportCacheKey(role);
         storage.setItem(key, JSON.stringify({
           savedAt: Date.now(),
           role: role === "public" ? "public" : "protected",
-          reports: Array.isArray(reportList) ? reportList : [],
-          events: Array.isArray(eventList) ? eventList : []
+          reports: Array.isArray(reportList) ? reportList : []
         }));
       } catch (error) {
-        console.debug("保存前端共同資料備援失敗", error);
+        console.debug("保存前端公告備援失敗", error);
       }
     }
 
-    function restoreDataSnapshot(role = accessRole) {
+    function restoreReportsSnapshot(role = accessRole) {
       try {
-        const storage = getFrontendDataStorage(role);
-        const key = getFrontendDataCacheKey(role);
+        const storage = getFrontendReportStorage(role);
+        const key = getFrontendReportCacheKey(role);
         const raw = storage.getItem(key);
         if (!raw) return false;
 
         const snapshot = JSON.parse(raw);
-        if (!snapshot || !Array.isArray(snapshot.reports) || !Array.isArray(snapshot.events) || !Number.isFinite(Number(snapshot.savedAt))) {
+        if (!snapshot || !Array.isArray(snapshot.reports) || !Number.isFinite(Number(snapshot.savedAt))) {
           storage.removeItem(key);
           return false;
         }
@@ -1470,36 +1090,21 @@
         }
 
         reports = snapshot.reports;
-        events = snapshot.events;
         hasDisplayedReportSnapshot = true;
         renderReports();
-        renderEvents();
         return true;
       } catch (error) {
-        console.debug("讀取前端共同資料備援失敗", error);
+        console.debug("讀取前端公告備援失敗", error);
         return false;
       }
     }
 
-    function clearProtectedDataSnapshot() {
-      try {
-        sessionStorage.removeItem(PROTECTED_DATA_CACHE_KEY);
-      } catch (error) {
-        console.debug("清除受保護資料備援失敗", error);
-      }
-    }
-
-    // 舊函式名稱保留相容性。
-    function saveReportsSnapshot(role, reportList) {
-      saveDataSnapshot(role, reportList, events);
-    }
-
-    function restoreReportsSnapshot(role = accessRole) {
-      return restoreDataSnapshot(role);
-    }
-
     function clearProtectedReportsSnapshot() {
-      clearProtectedDataSnapshot();
+      try {
+        sessionStorage.removeItem(PROTECTED_REPORT_CACHE_KEY);
+      } catch (error) {
+        console.debug("清除私田備援失敗", error);
+      }
     }
 
     function showToast(message) {
@@ -1671,9 +1276,8 @@
         if (requestRole !== accessRole) return false;
 
         reports = Array.isArray(data.reports) ? data.reports : [];
-        events = Array.isArray(data.events) ? data.events : [];
         if (data.dataVersion != null) currentDataVersion = String(data.dataVersion);
-        saveDataSnapshot(requestRole, reports, events);
+        saveReportsSnapshot(requestRole, reports);
         hasDisplayedReportSnapshot = true;
         return true;
       } catch (error) {
@@ -1715,7 +1319,6 @@
         success: !!data.success,
         role: data.role || "public",
         reports: Array.isArray(data.reports) ? data.reports : null,
-        events: Array.isArray(data.events) ? data.events : null,
         dataVersion: data.dataVersion != null ? String(data.dataVersion) : null,
         message: data.message || ""
       };
@@ -2238,332 +1841,6 @@ ${trkptContent}
       }
     }
 
-
-    const EVENT_INTERVAL_LABELS = {
-      "1day": "每1天一次",
-      "7days": "每7天一次",
-      "30days": "每30天一次",
-      "monthly1st": "每月1號刷新",
-      "1month": "每月1號刷新", // 相容舊資料
-      "once": "活動期間限一次"
-    };
-
-    function eventDateParts(value) {
-      if (!value) return null;
-      const date = value instanceof Date ? value : new Date(value);
-      if (Number.isNaN(date.getTime())) {
-        const match = String(value).match(/^(\d{4})[\/-](\d{1,2})[\/-](\d{1,2})/);
-        return match ? { year: Number(match[1]), month: Number(match[2]), day: Number(match[3]) } : null;
-      }
-      const parts = new Intl.DateTimeFormat("en-CA", {
-        timeZone: "Asia/Taipei", year: "numeric", month: "2-digit", day: "2-digit"
-      }).formatToParts(date);
-      const get = type => Number(parts.find(part => part.type === type)?.value || 0);
-      return { year: get("year"), month: get("month"), day: get("day") };
-    }
-
-    function eventDateKey(value) {
-      const p = eventDateParts(value);
-      if (!p) return "";
-      return `${p.year}-${pad2(p.month)}-${pad2(p.day)}`;
-    }
-
-    function formatEventDate(value) {
-      const p = eventDateParts(value);
-      return p ? `${p.year}/${pad2(p.month)}/${pad2(p.day)}` : "";
-    }
-
-    function todayTaipeiKey() {
-      return new Intl.DateTimeFormat("en-CA", {
-        timeZone: "Asia/Taipei", year: "numeric", month: "2-digit", day: "2-digit"
-      }).format(new Date());
-    }
-
-    function getEventStatus(eventData) {
-      const today = todayTaipeiKey();
-      const start = eventDateKey(eventData.startDate);
-      const end = eventDateKey(eventData.endDate);
-      if (start && today < start) return { key: "upcoming", label: "尚未開始" };
-      if (end && today > end) return { key: "ended", label: "已結束" };
-      if (!end) return { key: "permanent", label: "常駐" };
-      return { key: "active", label: "進行中" };
-    }
-
-    function parseEventCoordinateLines(coordsText) {
-      return String(coordsText || "")
-        .replace(/\r\n/g, "\n")
-        .split("\n")
-        .map(line => line.trim())
-        .filter(Boolean)
-        .map((line, index) => {
-          const semicolon = line.indexOf(";");
-          const name = semicolon >= 0 ? line.slice(0, semicolon).trim() : `座標 ${index + 1}`;
-          const coordText = semicolon >= 0 ? line.slice(semicolon + 1).trim() : line;
-          const match = coordText.match(/^\s*(-?\d+(?:\.\d+)?)\s*,\s*(-?\d+(?:\.\d+)?)\s*$/);
-          if (!match) return null;
-          const lat = Number(match[1]);
-          const lon = Number(match[2]);
-          if (!Number.isFinite(lat) || !Number.isFinite(lon) || Math.abs(lat) > 90 || Math.abs(lon) > 180) return null;
-          return { name: name || `座標 ${index + 1}`, lat, lon };
-        })
-        .filter(Boolean);
-    }
-
-    function validateEventCoords(coordsText) {
-      const nonEmptyLines = String(coordsText || "").replace(/\r\n/g, "\n").split("\n").map(v => v.trim()).filter(Boolean);
-      const parsed = parseEventCoordinateLines(coordsText);
-      return nonEmptyLines.length > 0 && parsed.length === nonEmptyLines.length;
-    }
-
-    // 活動資料已與開花公告共用同一個 API / 快取。
-    // 保留函式名稱避免舊程式呼叫失效，但不再另外發送網路請求。
-    async function loadEvents() {
-      renderEvents();
-      return true;
-    }
-
-    function buildEventGpx(eventData) {
-      const points = parseEventCoordinateLines(eventData.coords);
-      const trackName = eventData.name || "活動座標";
-      const wpts = points.map(point =>
-        `  <wpt lat="${escapeXml(point.lat.toFixed(6))}" lon="${escapeXml(point.lon.toFixed(6))}"><name>${escapeXml(point.name)}</name></wpt>`
-      ).join("\n");
-      const trkpts = points.map(point =>
-        `      <trkpt lat="${escapeXml(point.lat.toFixed(6))}" lon="${escapeXml(point.lon.toFixed(6))}"><name>${escapeXml(point.name)}</name></trkpt>`
-      ).join("\n");
-      return `<?xml version="1.0" encoding="UTF-8"?>
-<gpx version="1.1" creator="XiaoXiao">
-${wpts}
-  <trk>
-    <name>${escapeXml(trackName)}</name>
-    <trkseg>
-${trkpts}
-    </trkseg>
-  </trk>
-</gpx>`;
-    }
-
-    async function copyEventCoords(id) {
-      const eventData = events.find(item => String(item.id) === String(id));
-      if (!eventData) return;
-      const points = parseEventCoordinateLines(eventData.coords);
-      if (!points.length) return showToast("這個活動沒有有效座標");
-      const text = points.map(point => `${point.lat.toFixed(6)},${point.lon.toFixed(6)}`).join("\n");
-      try {
-        await navigator.clipboard.writeText(text);
-      } catch (error) {
-        const temp = document.createElement("textarea");
-        temp.value = text;
-        document.body.appendChild(temp);
-        temp.select();
-        document.execCommand("copy");
-        temp.remove();
-      }
-      showToast(`已複製 ${points.length} 個活動座標`);
-    }
-
-    function downloadEventGpx(id) {
-      const eventData = events.find(item => String(item.id) === String(id));
-      if (!eventData) return;
-      const points = parseEventCoordinateLines(eventData.coords);
-      if (!points.length) return showToast("這個活動沒有有效座標");
-      const fileName = `${sanitizeFileName(`活動_${eventData.name || "活動座標"}`)}.gpx`;
-      downloadTextFile(buildEventGpx(eventData), fileName);
-      showToast(`已下載 GPX：${fileName}`);
-    }
-
-    function renderEventCard(eventData) {
-      const status = getEventStatus(eventData);
-      const points = parseEventCoordinateLines(eventData.coords);
-      const period = `${formatEventDate(eventData.startDate) || "未設定"} ~ ${eventData.endDate ? (formatEventDate(eventData.endDate) || "未設定") : "常駐"}`;
-      const interval = EVENT_INTERVAL_LABELS[eventData.interval] || eventData.interval || "未設定";
-
-      return `
-        <article class="event-card ${status.key === "ended" ? "ended" : ""}">
-          <div class="event-cell event-name-cell">
-            <div class="event-title-row">
-              <h3 class="event-card-title">${escapeHtml(eventData.name || "未命名活動")}</h3>
-            </div>
-          </div>
-          <div class="event-cell event-interval-cell"><span class="event-mobile-label">間隔</span>${escapeHtml(interval)}</div>
-          <div class="event-cell event-period-cell"><span class="event-mobile-label">期間</span>${escapeHtml(period)}</div>
-          <div class="event-cell event-count-cell"><span class="event-mobile-label">座標</span>${points.length} 個</div>
-          <div class="event-cell event-note-cell"><span class="event-mobile-label">備註</span>${escapeHtml(eventData.note || "—")}</div>
-          <div class="event-cell event-operation-cell">
-            <span class="event-mobile-label">狀態 / 操作</span>
-            <span class="event-status ${status.key}">${escapeHtml(status.label)}</span>
-            <div class="event-actions">
-              <button onclick="copyEventCoords('${escapeHtml(eventData.id)}')">複製座標</button>
-              <button class="download" onclick="downloadEventGpx('${escapeHtml(eventData.id)}')">下載 GPX</button>
-            </div>
-            <div class="event-admin-row">
-              <button class="green" onclick="editEvent('${escapeHtml(eventData.id)}')">編輯</button>
-              <button class="danger" onclick="deleteEventItem('${escapeHtml(eventData.id)}')">刪除</button>
-            </div>
-          </div>
-        </article>`;
-    }
-
-    function renderEventTable(items) {
-      if (!items.length) return "";
-      return `
-        <div class="event-table-header">
-          <div class="event-cell">活動名稱</div>
-          <div class="event-cell">活動間隔</div>
-          <div class="event-cell">活動期間</div>
-          <div class="event-cell">座標數量</div>
-          <div class="event-cell">備註</div>
-          <div class="event-cell">狀態 / 操作</div>
-        </div>
-        ${items.map(renderEventCard).join("")}`;
-    }
-
-    function renderEvents() {
-      const current = [];
-      const ended = [];
-      events.forEach(eventData => {
-        (getEventStatus(eventData).key === "ended" ? ended : current).push(eventData);
-      });
-
-      current.sort((a, b) => eventDateKey(a.startDate).localeCompare(eventDateKey(b.startDate)) || String(a.name || "").localeCompare(String(b.name || ""), "zh-Hant"));
-      ended.sort((a, b) => eventDateKey(b.endDate).localeCompare(eventDateKey(a.endDate)));
-
-      $("eventsGrid").innerHTML = renderEventTable(current);
-      $("endedEventsGrid").innerHTML = renderEventTable(ended);
-      $("endedEventsTitle").style.display = ended.length ? "block" : "none";
-      $("eventsCount").textContent = events.length ? `共 ${events.length} 個活動` : "";
-
-      const summaryCounts = events.reduce((counts, eventData) => {
-        const key = getEventStatus(eventData).key;
-        counts[key] = (counts[key] || 0) + 1;
-        return counts;
-      }, {});
-      const summaryParts = [
-        `進行中 ${summaryCounts.active || 0} 個`,
-        `常駐 ${summaryCounts.permanent || 0} 個`
-      ];
-      if (summaryCounts.upcoming) summaryParts.push(`尚未開始 ${summaryCounts.upcoming} 個`);
-      const summaryText = $("eventSummaryText");
-      if (summaryText) summaryText.textContent = summaryParts.join(" ｜ ");
-
-      $("eventsSection").style.display = events.length ? "block" : "none";
-      $("eventsEmpty").style.display = events.length ? "none" : "block";
-    }
-
-    let currentMainTab = sessionStorage.getItem("pikminMainTab") === "events" ? "events" : "flowers";
-
-    function setMainTab(tab, { save = true } = {}) {
-      currentMainTab = tab === "events" ? "events" : "flowers";
-      if (save) sessionStorage.setItem("pikminMainTab", currentMainTab);
-
-      const isEvents = currentMainTab === "events";
-      document.body.classList.toggle("event-tab-on", isEvents);
-
-      $("flowerTabBtn").classList.toggle("active", !isEvents);
-      $("eventTabBtn").classList.toggle("active", isEvents);
-      $("flowerView").classList.toggle("active", !isEvents);
-      $("eventsView").classList.toggle("active", isEvents);
-      $("flowerAdminContent").classList.toggle("active", !isEvents);
-      $("eventAdminContent").classList.toggle("active", isEvents);
-
-      const adminTitle = $("adminPanelTitle");
-      if (adminTitle) adminTitle.textContent = isEvents ? "Admin 管理區｜活動座標" : "Admin 管理區｜開花公告";
-
-      const pageTitle = document.querySelector("header h1");
-      const pageSubtitle = document.querySelector("header p");
-      if (pageTitle) pageTitle.textContent = isEvents ? "🎪 妖妖活動公告" : "🌸 妖妖開花公告";
-      if (pageSubtitle) pageSubtitle.textContent = isEvents
-        ? "查看活動座標，一鍵複製座標或下載 GPX。"
-        : "管理員分享開花成果，其他 User 一鍵複製座標。";
-    }
-
-    function getEventFormData() {
-      return {
-        id: editingEventId || crypto.randomUUID(),
-        name: $("eventNameInput").value.trim(),
-        interval: $("eventIntervalInput").value,
-        startDate: $("eventStartDateInput").value,
-        endDate: $("eventEndDateInput").value,
-        coords: String($("eventCoordsInput").value || "").replace(/\r\n/g, "\n").trim(),
-        note: $("eventNoteInput").value.trim()
-      };
-    }
-
-    function clearEventForm() {
-      editingEventId = null;
-      $("eventNameInput").value = "";
-      $("eventIntervalInput").value = "1day";
-      $("eventStartDateInput").value = "";
-      $("eventEndDateInput").value = "";
-      $("eventCoordsInput").value = "";
-      $("eventNoteInput").value = "";
-      $("saveEventBtn").textContent = "新增活動";
-    }
-
-    function editEvent(id) {
-      setMainTab("events");
-      const eventData = events.find(item => String(item.id) === String(id));
-      if (!eventData) return;
-      editingEventId = eventData.id;
-      $("eventNameInput").value = eventData.name || "";
-      $("eventIntervalInput").value = eventData.interval === "1month" ? "monthly1st" : (eventData.interval || "1day");
-      $("eventStartDateInput").value = eventDateKey(eventData.startDate);
-      $("eventEndDateInput").value = eventData.endDate ? eventDateKey(eventData.endDate) : "";
-      $("eventCoordsInput").value = String(eventData.coords || "").replace(/\r\n/g, "\n");
-      $("eventNoteInput").value = eventData.note || "";
-      $("saveEventBtn").textContent = "更新活動";
-      if ($("adminPanel").classList.contains("collapsed")) setAdminPanelCollapsed(false);
-      $("eventNameInput").scrollIntoView({ behavior: "smooth", block: "center" });
-    }
-
-    async function saveEventToSheet(eventData) {
-      try {
-        const res = await fetch(API_URL, {
-          method: "POST",
-          body: JSON.stringify({ action: "saveEvent", adminPassword, event: eventData })
-        });
-        const data = await res.json();
-        if (!data.success) {
-          alert(data.message || "活動儲存失敗");
-          return false;
-        }
-        return true;
-      } catch (error) {
-        console.error(error);
-        alert("活動儲存失敗，請稍後再試。");
-        return false;
-      }
-    }
-
-    async function deleteEventFromSheet(id) {
-      try {
-        const res = await fetch(API_URL, {
-          method: "POST",
-          body: JSON.stringify({ action: "deleteEvent", adminPassword, id })
-        });
-        const data = await res.json();
-        if (!data.success) {
-          alert(data.message || "活動刪除失敗");
-          return false;
-        }
-        return true;
-      } catch (error) {
-        console.error(error);
-        alert("活動刪除失敗，請稍後再試。");
-        return false;
-      }
-    }
-
-    async function deleteEventItem(id) {
-      const eventData = events.find(item => String(item.id) === String(id));
-      if (!eventData) return;
-      if (!confirm(`確定要刪除活動「${eventData.name || "未命名活動"}」嗎？`)) return;
-      if (!await deleteEventFromSheet(id)) return;
-      await refreshReports({ force: true, showLoading: false });
-      clearEventForm();
-      showToast("已刪除活動");
-    }
-
     function renderReports() {
       const keyword = $("keyword").value.trim().toLowerCase();
       const color = $("colorFilter").value;
@@ -2709,7 +1986,6 @@ ${trkpts}
 
 
     function editReport(id) {
-      setMainTab("flowers");
       const report = reports.find(item => item.id === id);
       if (report) setFormData(report);
     }
@@ -2731,10 +2007,6 @@ ${trkpts}
     window.copyContent = copyContent;
     window.editReport = editReport;
     window.deleteReport = deleteReport;
-    window.copyEventCoords = copyEventCoords;
-    window.downloadEventGpx = downloadEventGpx;
-    window.editEvent = editEvent;
-    window.deleteEventItem = deleteEventItem;
 
     $("parseBtn").addEventListener("click", () => {
       const rawText = cleanSpreadsheetText($("rawInput").value);
@@ -2809,37 +2081,6 @@ ${trkpts}
       showToast("已刪除全部公告");
     });
 
-    $("saveEventBtn").addEventListener("click", async () => {
-      const eventData = getEventFormData();
-      if (!eventData.name) {
-        alert("請填寫活動名稱。");
-        $("eventNameInput").focus();
-        return;
-      }
-      if (!eventData.startDate) {
-        alert("請填寫活動開始日期。");
-        $("eventStartDateInput").focus();
-        return;
-      }
-      if (eventData.endDate && eventData.endDate < eventData.startDate) {
-        alert("活動結束日期不能早於開始日期。");
-        return;
-      }
-      if (!eventData.coords || !validateEventCoords(eventData.coords)) {
-        alert("活動座標格式有誤。\n每行請使用：名稱;緯度,經度\n例如：台北車站;25.047760,121.517058");
-        $("eventCoordsInput").focus();
-        return;
-      }
-      const wasEditingEvent = !!editingEventId;
-      const success = await saveEventToSheet(eventData);
-      if (!success) return;
-      await refreshReports({ force: true, showLoading: false });
-      clearEventForm();
-      showToast(wasEditingEvent ? "已更新活動" : "已新增活動");
-    });
-
-    $("clearEventBtn").addEventListener("click", clearEventForm);
-
     $("flowerInput").addEventListener("input", () => {
       // 輸入過程即同步有效性；仍可繼續打字搜尋，但無效名稱不能儲存。
       validateFlowerInput(false);
@@ -2906,12 +2147,10 @@ ${trkpts}
       // 不再登入成功後立刻發第二次 list POST。
       if (Array.isArray(result.reports)) {
         reports = result.reports;
-        events = Array.isArray(result.events) ? result.events : events;
         if (result.dataVersion != null) currentDataVersion = String(result.dataVersion);
         hasDisplayedReportSnapshot = true;
-        saveDataSnapshot(result.role, reports, events);
+        saveReportsSnapshot(result.role, reports);
         renderReports();
-        renderEvents();
       } else {
         // 相容舊版 Apps Script：若尚未回傳 reports，才走原本的第二次讀取。
         hasDisplayedReportSnapshot = false;
@@ -2925,7 +2164,6 @@ ${trkpts}
     $("logoutBtn").addEventListener("click", () => {
       const wasAdmin = isAdmin;
       clearForm();
-      clearEventForm();
 
       // 登出瞬間先在記憶體中移除所有私田，絕不等待 API 回應。
       // 這樣即使 Google Apps Script 很慢，私田也不會繼續留在畫面上。
@@ -2938,10 +2176,9 @@ ${trkpts}
       accessRole = "public";
       reports = publicOnlyReports;
       hasDisplayedReportSnapshot = true;
-      saveDataSnapshot("public", reports, events);
+      saveReportsSnapshot("public", reports);
       setAccessMode("public");
       renderReports();
-      renderEvents();
 
       showToast(wasAdmin ? "已離開 Admin 管理模式" : "已離開私田模式");
 
@@ -2950,9 +2187,6 @@ ${trkpts}
     });
 
 
-
-    $("flowerTabBtn").addEventListener("click", () => setMainTab("flowers"));
-    $("eventTabBtn").addEventListener("click", () => setMainTab("events"));
 
     $("reloadLatestBtn").addEventListener("click", () => {
       // 加上一次性參數，避免瀏覽器直接沿用舊 HTML 快取。
@@ -3043,7 +2277,6 @@ ${trkpts}
         if (success) {
           lastReportsRefreshAt = Date.now();
           renderReports();
-          renderEvents();
         }
       } finally {
         if (loadingAnimationTimer !== null) {
@@ -3195,7 +2428,6 @@ ${trkpts}
       await checkForSiteUpdate({ initialize: true });
 
       fillOptions();
-      setMainTab(currentMainTab, { save: false });
       enableMobileNoticeDrag();
 
       // 沒有本分頁登入憑證時，不保留任何私田備援。
@@ -3214,7 +2446,7 @@ ${trkpts}
       }
 
       hasDisplayedReportSnapshot = false;
-      const restoredSnapshot = restoreDataSnapshot(accessRole);
+      const restoredSnapshot = restoreReportsSnapshot(accessRole);
       await refreshReports({ force: true, showLoading: !restoredSnapshot });
       startDataVersionTimer();
       startReportsRefreshTimer();
